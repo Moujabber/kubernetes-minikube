@@ -61,5 +61,24 @@ modifier les 3 fichier yaml dans la partie selector avec le nom de notre service
 `kubectl apply -f myservice-service.yml  ` 
 `kubectl apply -f myservice-loadbalancing-service.yml`
 
-Vérifier dans le navigateur en copiant l'url, si ça a fonctionné 
+Vérifier dans le navigateur en copiant l'url, si ça a fonctionné    
+## Liaison entre myservice1 et front-end (myservice2)    
+récupérer les images de efrei/front-end et efrei/back-end    
+modifier l'url dans le fichier application.yml par myservice1   
+puis `.\gradlew build`   
+construction de l'image docker `doker build -t front-end1 .`    
+Démarer le container `docker run -p 4000:8080 -t frond-end1` 
+Ne pas oublier de démarer avec `minikube start`
+Publier l'image Tag the docker image: `docker tag imageID daviamoujabber/front-end1:latest`  
+se connecter sur docker :` docker login `   
+pousser l'image vers docker hub : `docker push daviamoujabber/front-end1:latest`
 
+`kubectl create deployment myservice2 --image=daviamoujabber/front-end1:latest`   
+myservice2 aurai pu être remplacé par front-end, on donne le nom que l'on veut au déploiement    
+pour vérifier la création du déploiement : 
+`kubectl get deployments`
+`kubectl get pods`
+`kubectl logs myservice2-6dcb678cbf-hbmgd  ` 
+
+`kubectl expose deployment myservice2 --type=NodePort --port=8080`
+`minikube service myservice2 --url`
